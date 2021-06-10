@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace RoadRepair
 {
+   
     public class Planner
     {
         /// <summary>
@@ -35,12 +34,12 @@ namespace RoadRepair
         /// <returns>Either a PatchingRepair or a Resurfacing</returns>
         public object SelectRepairType(Road road)
         {
-            // Use the road.Width, road.Length and road.Potholes properties to calculate the density of potholes. 
+            // Use the road.Width, road.Length and road.Potholes properties to calculate the density of potholes.
 
             // If the density of potholes is more than 20% the road should be resurfaced.
             // Otherwise it should be patched.
-           
-            var potholeDensity =   road.Potholes/(road.Length * road.Width);
+
+            var potholeDensity = road.Potholes / (road.Length * road.Width);
             if (potholeDensity > 0.2)
             {
                 var resurface = new Resurfacing(road);
@@ -50,9 +49,6 @@ namespace RoadRepair
             var patching = new PatchingRepair(road);
 
             return patching;
-
-
-
         }
 
         /// <summary>
@@ -62,7 +58,7 @@ namespace RoadRepair
         /// <returns>The total volume of all the repairs</returns>
         public double GetVolume(List<Road> roads)
         {
-            double repairVolume=0;
+            double repairVolume = 0;
             //Check the type of repair needed
             foreach (var r in roads)
             {
@@ -84,23 +80,71 @@ namespace RoadRepair
 
         public List<Road> SelectRoadsToRepair(List<Road> roads, double availableMaterial)
         {
-           var totalVolume = GetVolume(roads);
-            double availableSpace;
-            if (GetVolume(roads) > availableMaterial)
+            List<RoadRepairInformation> volumeValues = new List<RoadRepairInformation>();
+
+            foreach (var road in roads)
             {
-                var roadList = roads;
+                GetRoadRepairInformation(road, ref volumeValues);
+            }
 
-                var remainder =  GetVolume(roads) % availableMaterial;
+            var OrderedByDescending = volumeValues.OrderByDescending(value => value.Volume).ToList();
+            var OrderedByAscending = volumeValues.OrderBy(value => value.Volume).ToList();
 
-                return roadList;
+            var OptimalRoadsToRepairAscending = OptimalRoadsToRepair(availableMaterial, OrderedByAscending);
+            var OptimalRoadsToRepairDescending = OptimalRoadsToRepair(availableMaterial, OrderedByDescending);
+
+            if (OptimalRoadsToRepairAscending.AavailableMaterial < OptimalRoadsToRepairDescending.AavailableMaterial)
+            {
+                return OptimalRoadsToRepairAscending.SelectedRoads;
+            }
+
+            return OptimalRoadsToRepairDescending.SelectedRoads;
+        }
+
+        public List<RoadRepairInformation> GetRoadRepairInformation(Road road, ref List<RoadRepairInformation> volumeValues)
+        {
+            var value = SelectRepairType(road);
+            if (value.GetType() == typeof(PatchingRepair))
+            {
+                var newVal = (PatchingRepair)value;
+                volumeValues.Add(new RoadRepairInformation
+                {
+                    Volume = newVal.GetVolume(),
+                    Road = road
+                });
             }
             else
             {
-                return roads;
+                var newVal = (Resurfacing)value;
+                volumeValues.Add(new RoadRepairInformation
+                {
+                    Volume = newVal.GetVolume(),
+                    Road = road
+                });
             }
-         
 
+            return volumeValues;
+        }
+
+        public OptimalRoadsToRepair OptimalRoadsToRepair(double availableMaterial, List<RoadRepairInformation> roadRepair)
+        {
+            List<Road> roadsToRepair = new List<Road>();
+
+
+            foreach (var road in roadRepair)
+            {
+                if (road.Volume <= availableMaterial)
+                {
+                    roadsToRepair.Add(road.Road);
+                    availableMaterial -= road.Volume;
+                }
+            }
+
+            return new OptimalRoadsToRepair
+            {
+                AavailableMaterial = availableMaterial,
+                SelectedRoads = roadsToRepair
+            };
         }
     }
-
 }
