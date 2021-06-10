@@ -1,0 +1,9 @@
+C:\Users\cr220331\Downloads\RoadRepair\RoadRepair\bin\Debug\netstandard2.0\RoadRepair.deps.json
+C:\Users\cr220331\Downloads\RoadRepair\RoadRepair\bin\Debug\netstandard2.0\RoadRepair.dll
+C:\Users\cr220331\Downloads\RoadRepair\RoadRepair\bin\Debug\netstandard2.0\RoadRepair.pdb
+C:\Users\cr220331\Downloads\RoadRepair\RoadRepair\obj\Debug\netstandard2.0\RoadRepair.csprojAssemblyReference.cache
+C:\Users\cr220331\Downloads\RoadRepair\RoadRepair\obj\Debug\netstandard2.0\RoadRepair.csproj.CoreCompileInputs.cache
+C:\Users\cr220331\Downloads\RoadRepair\RoadRepair\obj\Debug\netstandard2.0\RoadRepair.AssemblyInfoInputs.cache
+C:\Users\cr220331\Downloads\RoadRepair\RoadRepair\obj\Debug\netstandard2.0\RoadRepair.AssemblyInfo.cs
+C:\Users\cr220331\Downloads\RoadRepair\RoadRepair\obj\Debug\netstandard2.0\RoadRepair.dll
+C:\Users\cr220331\Downloads\RoadRepair\RoadRepair\obj\Debug\netstandard2.0\RoadRepair.pdb
